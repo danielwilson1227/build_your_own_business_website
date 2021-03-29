@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Daniel Wilson">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title></title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>DAN'S ADOPTIONS</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link rel="shortcut icon" href="#" />
   <style>
-    * {
+* {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
@@ -18,7 +17,7 @@
 body::after {
 	content: "";
 	background: url("https://images.unsplash.com/photo-1567459169668-95d355371bda?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1049&q=80") no-repeat center/cover;
-	opacity: 0.60;
+	opacity: 0.80;
 	top: -10px;
 	left: -10px;
 	bottom: 0;
@@ -32,6 +31,22 @@ body {
 	position: relative;
 	margin: 0 auto;
 	padding: 1em;
+  color: white;
+}
+#page-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+#content-wrap {
+  padding-bottom: 2.5rem;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;          
 }
 header h1, header h3, #form{
   margin: 0.5em auto;
@@ -42,247 +57,303 @@ header h1, header h3, #form{
 .d-block{
   display: block;
 }
+form label{
+  font-size: 1.5rem;
+}
 #gallery-container{
-  width: 70vw;
-  height: 60vh;
+  width: 85vw;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin: 1em auto;
+  margin: 2em 0;
   align-items: center;
   justify-items: center;
+  gap: 1.5em 2em;
 }
 .gallery-card{
-  height: 80%;
-  width: 75%;
-  transition: 1s;
-  border: grey solid;
+  width: 205px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  display: flex;
 }
-
 .textContainer{
   display: flex;
-  padding: 0.2em;
-  justify-content: space-between;
+  flex-direction: column;
+  padding: 0.4em;
+  justify-content: space-evenly;
   background: rgba(0,0,0,0.5);
   color: white;
-  margin:0;
-  height: 25%;
-};
-.gallery-card:hover {
-	transform: scale(1.2);
+  width: 215px;
 }
 .dogImg{
-  width: 100%;
-  height: 75%;
+  transition: 1s;
 }
-
-@media(max-width: 754px) and (min-width: 400px){
+.dogImg:hover{
+  transform: scale(1.2); 
+}
+@media(max-width: 950px) and (min-width: 730px){
   #gallery-container{
   grid-template-columns: repeat(2, 1fr);
-  width: 80vw;
 }
 }
-  </style>
+@media(max-width: 729px) and (min-width: 0px){
+  #gallery-container{
+  grid-template-columns: repeat(1, 1fr);
+  width: 73vw;
+}
+}
+@media(min-height: 600px) and (min-width: 975px){
+  #gallery-container{
+  gap: 5em 2em;
+  margin: 4em 0;
+}
+}
+
+</style>
 </head>
 <body>
+  <div id="page-container">
+    <div id="content-wrap">
   <header>
- <h1 class="text-center">Daniel's Puppies</h1>
- <h3 class="text-center">Puppies for sale in Fort Lauderdale</h3>
-</header>
- <form class="d-block text-center" id="form">
-  <label for="dogSelect">Choose a breed:</label>
-  <select name="dogSelect" id="dogSelect">
-    <option hidden disabled selected value> -- select an option -- </option>
-    <option value="breedOne">breedOne</option>
-    <option value="breedTwo">breedTwo</option>
-    <option value="breedThree">breedThree</option>
-  </select>
- </form>
- <section id="gallery-container">
- </section>
+    <h1 class="text-center">DAN'S ADOPTIONS</h1>
+    <h2 class="text-center">Adopt a friend for life</h2>
+  </header>
+  <form class="d-block text-center" id="form">
+    <label for="locationSelect">Choose one of our locations:</label>
+    <select name="locationSelect" id="locationSelect">
+      <option hidden disabled selected value> -- select an option -- </option>
+      <option value="locationOne">Fort Lauderdale</option>
+      <option value="locationTwo">Miami Beach</option>
+      <option value="locationThree">Orlando</option>
+    </select>
+  </form>
+  <section id="gallery-container"></section>
+    </div>
+  <footer>
+    <p class="text-center">All photos referenced from https://unsplash.com</p>
+  </footer>
 <script>
-  let count=0;
-  let breedChosen='';
-  $("#dogSelect").change(function() {
-     $("#form").submit();
-    }
-    );
+let count = 0;
+let locationChosen = '';
+//when there is an on change for select option, submit form
+$('#locationSelect').change(function (){
+	$('#form').submit();
+});
+//if user is selecting location option for the first time, create the cards. else only adjust the cards based on location chosen. 
+$('#form').submit(function (event){
+	event.preventDefault();
+	if (count > 0) {
+		adjustCards();
+	}
+	else {
+		count++;
+		createCards();
+	}
+});
 
-  $("#form").submit(function(event){
-    event.preventDefault();
-if(count > 0){
-  adjustCards();
+function createCards (){
+	for (let i = 0; i < 6; i++) {
+		//declare variables
+		let card = document.createElement('div'),
+			textContainer = document.createElement('div'),
+			dogName = document.createElement('p'),
+			dogBreed = document.createElement('p'),
+			dogAge = document.createElement('p'),
+			dogSex = document.createElement('p'),
+		  dogImg = document.createElement('img'),
+		  hrTag = document.createElement('hr');
+
+		//set class to elements
+		dogName.setAttribute('class', 'dogName');
+		dogBreed.setAttribute('class', 'dogBreed');
+		dogAge.setAttribute('class', 'dogAge');
+		dogSex.setAttribute('class', 'dogSex');
+		dogImg.setAttribute('class', 'dogImg');
+		textContainer.setAttribute('class', 'textContainer');
+		card.classList.add('gallery-card');
+
+		//append elements
+		$('#gallery-container').append(card);
+		card.appendChild(dogImg);
+		card.appendChild(textContainer);
+		textContainer.appendChild(dogName);
+		textContainer.appendChild(dogBreed);
+		textContainer.appendChild(dogAge);
+		textContainer.appendChild(dogSex);
+		adjustCards();
+	}
 }
-else{
-count++;
-    createCards();
-};
-  });
+function adjustCards (){
+	locationChosen = $('#locationSelect').val();
 
-  function createCards(){
-  for (let i = 0; i < 6; i++) {
-			let card = document.createElement('div'),
-			    textContainer = document.createElement('div'),
-          dogImg = document.createElement('img'),
-          dogDescription = document.createElement('p'),
-          dogPrice= document.createElement('p');
-      dogDescription.setAttribute('class', 'dogDescription');
-      dogPrice.setAttribute('class', 'dogPrice');
-      dogImg.setAttribute('class', 'dogImg');
-      textContainer.setAttribute('class', 'textContainer');
-      textContainer.appendChild(dogDescription);
-      textContainer.appendChild(dogPrice);
-      card.appendChild(dogImg);
-      card.appendChild(textContainer);
-      card.classList.add('gallery-card');
-      card.setAttribute('id',`img${i}`);
-			$('#gallery-container').append(card);
-      adjustCards();
-      dogImg.setAttribute('src', 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=1.00xw:0.669xh;0,0.190xh&resize=1200:*')
-  }
+	//declare HTML collections
+	let cards = document.getElementsByClassName('gallery-card'),
+		dogNames = document.getElementsByClassName('dogName'),
+		dogBreeds = document.getElementsByClassName('dogBreed'),
+		dogAges = document.getElementsByClassName('dogAge'),
+		dogSexes = document.getElementsByClassName('dogSex'),
+		dogImages = document.getElementsByClassName('dogImg');
+
+    //grab pet description from array depending on location chosen
+	for (let i = 0; i < cards.length; i++) {
+		if (locationChosen === 'locationOne') {
+			dogNames[i].innerHTML = `Name: ${locationOne[i].dogName}<hr/>`;
+			dogBreeds[i].innerHTML = `Breed: ${locationOne[i].dogBreed}<hr/>`;
+			dogAges[i].innerHTML = `Age: ${locationOne[i].dogAge}<hr/>`;
+			dogSexes[i].innerText = `Sex: ${locationOne[i].dogSex}`;
+			dogImages[i].setAttribute('src', `${locationOne[i].url}`);
+		}
+		else if (locationChosen === 'locationTwo') {
+			dogNames[i].innerHTML = `Name: ${locationTwo[i].dogName}<hr/>`;
+			dogBreeds[i].innerHTML = `Breed: ${locationTwo[i].dogBreed}<hr/>`;
+			dogAges[i].innerHTML = `Age: ${locationTwo[i].dogAge}<hr/>`;
+			dogSexes[i].innerText = `Sex: ${locationTwo[i].dogSex}`;
+			dogImages[i].setAttribute('src', `${locationTwo[i].url}`);
+		}
+		else {
+			dogNames[i].innerHTML = `Name: ${locationThree[i].dogName}<hr/>`;
+			dogBreeds[i].innerHTML = `Breed: ${locationThree[i].dogBreed}<hr/>`;
+			dogAges[i].innerHTML = `Age: ${locationThree[i].dogAge}<hr/>`;
+			dogSexes[i].innerText = `Sex: ${locationThree[i].dogSex}`;
+			dogImages[i].setAttribute('src', `${locationThree[i].url}`);
+		}
+	}
 }
-function adjustCards(){
-  breedChosen = $("#dogSelect").val();
-    console.log(breedChosen);
-  let cards = document.getElementsByClassName('gallery-card');
-  let dogDescriptions = document.getElementsByClassName('dogDescription');
-  let dogPrices = document.getElementsByClassName('dogPrice');
-  for (let i = 0; i < cards.length; i++) {
-// cards[i].setAttribute('style', `background: ${colors[i]}`);
-if(breedChosen === 'breedOne'){
-dogDescriptions[i].innerText = `${breedOne[i].dogDescription}`;
-dogPrices[i].innerText = `${breedOne[i].dogPrice}`;
-  }
-  else if(breedChosen === 'breedTwo'){
-    dogDescriptions[i].innerText = `${breedTwo[i].dogDescription}`;
-    dogPrices[i].innerText = `${breedTwo[i].dogPrice}`;
-}
-else{
-  dogDescriptions[i].innerText = `${breedThree[i].dogDescription}`;
-  dogPrices[i].innerText = `${breedThree[i].dogPrice}`;
-}
-}}
 
- let colors=['red', 'green', 'blue', 'orange', 'grey', 'purple'];
- let breedOne= [
-   {
-     dogDescription: 'rednose',
-     dogPrice: '$25',
-     url: ''
-   },
-   {
-     dogDescription: 'greennose',
-     dogPrice: '$35',
-     url: ''
-   },
-   {
-     dogDescription: 'bluenose',
-     dogPrice: '$45',
-     url: ''
-   },
-   {
-     dogDescription: 'yellownose',
-     dogPrice: '$55',
-     url: ''
-   },
-   {
-     dogDescription: 'brownnose',
-     dogPrice: '$65',
-     url: ''
-   },
-   {
-     dogDescription: 'blacknose',
-     dogPrice: '$75',
-     url: ''
-   }
- ];
+let locationOne = [
+	{
+		dogName  : 'Darby',
+		dogBreed : 'Terrier',
+		dogAge   : '2 years',
+		dogSex   : 'Male',
+		url      : 'images/location_one/location1img1.jpg'
+	},
+	{
+		dogName  : 'Lola',
+		dogBreed : 'Yorkie',
+		dogAge   : '6 years',
+		dogSex   : 'Female',
+		url      : 'images/location_one/location1img2.jpg'
+	},
+	{
+		dogName  : 'Bambam',
+		dogBreed : 'Chihuahua',
+		dogAge   : '5 years',
+		dogSex   : 'Male',
+		url      : 'images/location_one/location1img3.jpg'
+	},
+	{
+		dogName  : 'Knight',
+		dogBreed : 'Schnauzer',
+		dogAge   : '8 months',
+		dogSex   : 'Male',
+		url      : 'images/location_one/location1img4.jpg'
+	},
+	{
+		dogName  : 'Shado',
+		dogBreed : 'Husky',
+		dogAge   : '10 years',
+		dogSex   : 'Female',
+		url      : 'images/location_one/location1img5.jpg'
+	},
+	{
+		dogName  : 'Sparky',
+		dogBreed : 'Terrier',
+		dogAge   : '12 years',
+		dogSex   : 'Male',
+		url      : 'images/location_one/location1img6.jpg'
+	}
+];
 
- let breedTwo= [
-   {
-     dogDescription: 'blacknose',
-     dogPrice: '$75',
-     url: ''
-   },
-   {
-     dogDescription: 'greennose',
-     dogPrice: '$65',
-     url: ''
-   },
-   {
-     dogDescription: 'graynose',
-     dogPrice: '$55',
-     url: ''
-   },
-   {
-     dogDescription: 'purplenose',
-     dogPrice: '$45',
-     url: ''
-   },
-   {
-     dogDescription: 'binknose',
-     dogPrice: '$35',
-     url: ''
-   },
-   {
-     dogDescription: 'hinnose',
-     dogPrice: '$25',
-     url: ''
-   }
- ];
+let locationTwo = [
+	{
+		dogName  : 'Benny',
+		dogBreed : 'Hound',
+		dogAge   : '4 years',
+		dogSex   : 'Male',
+		url      : 'images/location_two/location2img1.jpg'
+	},
+	{
+		dogName  : 'Lucy',
+		dogBreed : 'Pug',
+		dogAge   : '6 months',
+		dogSex   : 'Female',
+		url      : 'images/location_two/location2img2.jpg'
+	},
+	{
+		dogName  : 'Moon',
+		dogBreed : 'Pitbull',
+		dogAge   : '3 years',
+		dogSex   : 'Male',
+		url      : 'images/location_two/location2img3.jpg'
+	},
+	{
+		dogName  : 'Chula',
+		dogBreed : 'Golden Retriever',
+		dogAge   : '2 months',
+		dogSex   : 'Female',
+		url      : 'images/location_two/location2img4.jpg'
+	},
+	{
+		dogName  : 'Tito',
+		dogBreed : 'Bulldog',
+		dogAge   : '5 years',
+		dogSex   : 'Male',
+		url      : 'images/location_two/location2img5.jpg'
+	},
+	{
+		dogName  : 'Bella',
+		dogBreed : 'Beagle',
+		dogAge   : '3 months',
+		dogSex   : 'Female',
+		url      : 'images/location_two/location2img6.jpg'
+	}
+];
 
- let breedThree= [
-   {
-     dogDescription: 'king',
-     dogPrice: '$175',
-     url: ''
-   },
-   {
-     dogDescription: 'queen',
-     dogPrice: '$165',
-     url: ''
-   },
-   {
-     dogDescription: 'jack',
-     dogPrice: '$155',
-     url: ''
-   },
-   {
-     dogDescription: 'joker',
-     dogPrice: '$145',
-     url: ''
-   },
-   {
-     dogDescription: 'ace',
-     dogPrice: '$135',
-     url: ''
-   },
-   {
-     dogDescription: '10',
-     dogPrice: '$125',
-     url: ''
-   }
- ];
+let locationThree = [
+	{
+		dogName  : 'Latte',
+		dogBreed : 'Dachshund',
+		dogAge   : '1 year',
+		dogSex   : 'female',
+		url      : 'images/location_three/location3img1.jpg'
+	},
+	{
+		dogName  : 'Leeloo',
+		dogBreed : 'Pitbull',
+		dogAge   : '3 weeks',
+		dogSex   : 'Female',
+		url      : 'images/location_three/location3img2.jpg'
+	},
+	{
+		dogName  : 'Charlie',
+		dogBreed : 'Beagle',
+		dogAge   : '6 months',
+		dogSex   : 'Male',
+		url      : 'images/location_three/location3img3.jpg'
+	},
+	{
+		dogName  : 'Kuala',
+		dogBreed : 'Germ Shep',
+		dogAge   : '1 month',
+		dogSex   : 'Female',
+		url      : 'images/location_three/location3img4.jpg'
+	},
+	{
+		dogName  : 'Marley',
+		dogBreed : 'Gold Retrvr',
+		dogAge   : '2 months',
+		dogSex   : 'Male',
+		url      : 'images/location_three/location3img5.jpg'
+	},
+	{
+		dogName  : 'Jo',
+		dogBreed : 'Germ Shep',
+		dogAge   : '2 years',
+		dogSex   : 'Female',
+		url      : 'images/location_three/location3img6.jpg'
+	}
+];
 </script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+</div>
 </body>
 </html>
-
-
-<!-- <style>
-  .card {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    width: 40%;
-  }
-  
-  .container {
-    padding: 2px 16px;
-  }
-  </style>
-  </head>
-  <body>
-  <div class="card">
-    <img src="img_avatar.png" alt="Avatar" style="width:100%">
-    <div class="container">
-      <h4><b>John Doe</b></h4> 
-      <p>Architect & Engineer</p> 
-    </div>
-  </div> -->
